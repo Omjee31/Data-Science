@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For Pallavi ❤️</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#ff758c,#ff7eb3);
+color:white;
+text-align:center;
+overflow-x:hidden;
+}
+
+/* Floating hearts */
+
+.heart{
+position:fixed;
+bottom:-20px;
+font-size:20px;
+animation:float 6s linear infinite;
+opacity:0.8;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+100%{transform:translateY(-120vh)}
+}
+
+/* Envelope */
+
+.container{
+margin-top:80px;
+}
+
+.envelope{
+width:200px;
+height:120px;
+background:white;
+margin:auto;
+position:relative;
+cursor:pointer;
+border-radius:6px;
+}
+
+.flap{
+position:absolute;
+top:0;
+left:0;
+width:0;
+height:0;
+border-left:100px solid transparent;
+border-right:100px solid transparent;
+border-bottom:60px solid #ff4d6d;
+transform-origin:top;
+transition:1s;
+}
+
+.open .flap{
+transform:rotateX(180deg);
+}
+
+/* Letter */
+
+.letter{
+display:none;
+background:white;
+color:#333;
+padding:30px;
+margin:20px;
+border-radius:10px;
+max-width:800px;
+margin:auto;
+}
+
+/* Gallery */
+
+.gallery{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:15px;
+}
+
+.gallery img{
+width:200px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Video */
+
+video{
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
+margin-top:10px;
+}
+
+/* Cute bear animation */
+
+.bear{
+font-size:60px;
+animation:bounce 1s infinite alternate;
+}
+
+@keyframes bounce{
+from{transform:translateY(0)}
+to{transform:translateY(-10px)}
+}
+
+/* Buttons */
+
+button{
+padding:12px 25px;
+border:none;
+background:#ff4d6d;
+color:white;
+font-size:18px;
+border-radius:8px;
+margin:10px;
+cursor:pointer;
+}
+
+/* Mobile */
+
+@media(max-width:600px){
+
+.gallery img{
+width:140px;
+}
+
+video{
+width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>For Pallavi ❤️</h1>
+<p>Click the envelope</p>
+
+<div class="container">
+
+<div class="envelope" id="env" onclick="openLetter()">
+
+<div class="flap"></div>
+
+</div>
+
+</div>
+
+
+<div class="letter" id="letter">
+
+<h2>Our First Meeting 🌸</h2>
+
+<p>
+14 February 2023 – Kali Mandir  
+That day was very special for me.
+</p>
+
+
+<h2>My Message For You 💌</h2>
+
+<p>
+Pallavi,  
+Even if we can't talk much right now,  
+you will always be special to me.
+</p>
+
+
+<!-- ================= IMAGE SECTION ================= -->
+
+<h2>Our Memories 📷</h2>
+
+<div class="gallery">
+
+<!-- ADD YOUR IMAGES HERE -->
+
+<!-- Example -->
+<!-- Replace photo1.jpg with your real image -->
+
+<img src="image1.jpg">
+<img src="immage2.jpg">
+<img src="image3.jpg">
+<img src="image4.jpg">
+<img src="image5.jpg">
+
+</div>
+
+
+<!-- ================= VIDEO SECTION ================= -->
+
+<h2>Our Special Videos 🎥</h2>
+
+<!-- Video 1 -->
+
+<video width="400" controls>
+
+<source src="vide1.mp4" type="video/mp4">
+
+Your browser does not support video.
+
+</video>
+
+
+<br><br>
+
+<!-- Video 2 -->
+
+<video width="400" controls>
+
+<source src="vide2.mp4" type="video/mp4">
+
+Your browser does not support video.
+
+</video>
+
+
+<!-- ================= AUDIO / MUSIC SECTION ================= -->
+
+<h2>Our Song 🎵</h2>
+
+<!-- ADD YOUR MUSIC FILE HERE -->
+
+<!-- Example: romantic_song.mp3 -->
+
+<audio controls autoplay loop>
+
+<source src="song.mp3" type="audio/mpeg">
+
+</audio>
+
+
+<!-- ================= CUTE ANIMATION ================= -->
+
+<h2>Cute Moment 🐻</h2>
+
+<div class="bear">🐻❤️🐻</div>
+
+
+<!-- ================= LOVE QUESTION ================= -->
+
+<h2>One Question 🌹</h2>
+
+<p>Do you still love me?</p>
+
+<button onclick="yesLove()">Yes ❤️</button>
+<button onclick="noLove()">No 😢</button>
+
+<p id="result"></p>
+
+</div>
+
+
+<script>
+
+/* Envelope open */
+
+function openLetter(){
+
+document.getElementById("env").classList.add("open");
+
+setTimeout(function(){
+
+document.getElementById("letter").style.display="block";
+
+},500)
+
+}
+
+
+/* Yes button */
+
+function yesLove(){
+
+document.getElementById("result").innerHTML=
+"Pallavi ❤️ That makes me the happiest person.";
+
+}
+
+
+/* No button */
+
+function noLove(){
+
+document.getElementById("result").innerHTML=
+"Even then I will always respect and care for you.";
+
+}
+
+
+/* Floating hearts animation */
+
+function createHeart(){
+
+const heart=document.createElement("div");
+
+heart.className="heart";
+
+heart.innerHTML="❤️";
+
+heart.style.left=Math.random()*100+"vw";
+
+heart.style.fontSize=(10+Math.random()*20)+"px";
+
+document.body.appendChild(heart);
+
+setTimeout(function(){
+
+heart.remove();
+
+},6000)
+
+}
+
+setInterval(createHeart,300)
+
+</script>
+
+</body>
+</html>
