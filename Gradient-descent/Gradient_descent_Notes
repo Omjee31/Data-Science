@@ -1,0 +1,525 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Gradient Descent"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Introduction\n",
+    "\n",
+    "*Gradient Descent* is a generic optimization algorithm capable of finding optimal solutions to a wide range of problems. The general idea of Gradient Descent is to tweak parameters iteratively in order to minimize a cost function.  \n",
+    "  \n",
+    "  \n",
+    "Suppose we have to minimize the value of \"W\" for a given loss function. Concretely, we start by filling \"W\" with random values (*random initialization*). Then we improve it gradually, taking one baby step at a time, each step attempting to decrease the loss function, until the algorithm converges to a minimum."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "![](gd1.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's first try to grab the concept with a raw example, keeping all ML algorithms aside.  \n",
+    "\n",
+    "Let's say we have an equation $y = 3x^2 - 2x + 5$. By solving this equation,  \n",
+    "\n",
+    "$\\dfrac{dy}{dx} = 6x - 2$  \n",
+    "\n",
+    "$\\dfrac{dy}{dx}= \n",
+    "\\begin{cases}\n",
+    "    +_{ve} ,& \\text{when } x > \\frac{1}{3}\\\\\n",
+    "    0,              & \\text{when } x = \\frac{1}{3}\\\\\n",
+    "    -_{ve} ,& \\text{when } x < \\frac{1}{3}\\\\\n",
+    "\\end{cases}$  \n",
+    "\n",
+    "\n",
+    "and we know that minimum values exist when $\\frac{dy}{dx} = 0$, so $y$ will be minimum at $x=\\frac{1}{3}$"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "![](gd2.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Suppose we don't know about the minima of this equation, and we want to find it by Gradient Descent. So we'll start by initializing a random value of $x$, and then proceed to the minima.  \n",
+    "\n",
+    " \n",
+    "> Let's try putting $x = \\frac{1}{6}$  \n",
+    "\n",
+    "So, $\\frac{dy}{dx} = -2$, we know that for minimum value $\\frac{dy}{dx}$ should be $0$. So that means we have to move in the +ve X direction.  \n",
+    "\n",
+    "  \n",
+    "> So Let's try putting $x = \\frac{2}{3}$  \n",
+    "\n",
+    "So, $\\frac{dy}{dx} = 2$, we know that for minimum value $\\frac{dy}{dx}$ should be $0$. So that means we have moved ahead of minima in +ve direction, we have to move back in -ve direction.  \n",
+    "\n",
+    "  \n",
+    "> Let's proceed by putting $x = \\frac{1}{3}$  \n",
+    "\n",
+    "So, $\\frac{dy}{dx} = 0$, and we know that for minimum value $\\frac{dy}{dx}$ should be $0$. So that means we have got our minima at $x=\\frac{1}{3}$.  \n",
+    "\n",
+    "  \n",
+    "So by performing these iterations, we can reach the minima of an equation.  \n",
+    "Now in case of vectors,  \n",
+    "Suppose the jacobian matrix is $\\begin{bmatrix} 2 \\\\ 3 \\end{bmatrix}$. This tells we have gone further in both $w_1$ and $w_2$ direction, and we need to go back, and similarly $\\begin{bmatrix} 2 \\\\ -3 \\end{bmatrix}$ tells us that we have gone further in $w_1$ but we still need to proceed in $w_2$ direction.  \n",
+    "  \n",
+    "This is the basic idea for the gradient descent approach, and how it helps to approach the minima.  \n",
+    "  \n",
+    "***\n",
+    "\n",
+    "### General Algorithm\n",
+    "Now for larger calculations, we need a general formula for Gradient Descent.  \n",
+    "\n",
+    "> **for** $n\\_epochs$:  \n",
+    "> \n",
+    "> $\\hspace{1cm}w' = w' - \\alpha\\dfrac{dL}{dw}$"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, we have two new Parameters => \"$n\\_epochs$\" and \"$\\alpha$\"  \n",
+    "\n",
+    "> #### $n\\_epochs$\n",
+    "> \n",
+    ">\n",
+    "> It is the no. of iterations, we need to perform to reach the minima. It is an important parameter as if it's value is too low, our model will stop before reaching the minima, and thus increasing the error of the model. And if it's value is set too high, it will affect the efficieny of the model, making it very slow.  \n",
+    "> \n",
+    "> So it's value is adjusted in a way that neither our model stops before reaching the minima, nor it goes through unnecessary iterations, making the model slow.  \n",
+    "> \n",
+    "> Note that if our model reaches the minima the $\\frac{dL}{dw}$ term becomes 0, which means the value of $w'$ will no longer be updated in the further epochs, but the program still continues to run without making any contribution, that is why we call them unnecessary iterations, which makes the model slow.  \n",
+    "> \n",
+    "> \n",
+    "> \n",
+    "> #### $\\alpha$ - Learning Rate\n",
+    "> \n",
+    "> \n",
+    "> It is another important parameter in Gradient Descent, which tells us about the size of the steps in each iterations. if the learning rate is too small, then the algorithm will have to go through many iterations to converge, which will take a long time making our model very slow.  \n",
+    "> \n",
+    "\n",
+    "See in fig. below"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "![small%20learning%20rate.png](gd3.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "On the other hand, if the learning rate $\\alpha$ is too high, we might end up jumping across the valley and end up on the other side, possibly even higher up than we were before. This might make the algorithm diverge, with larger and larger values, failing to find a good solution. These kind of jumps are also known as \"Outward Oscilaations\".  \n",
+    "\n",
+    "\n",
+    "See the figure below for visualisation."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "![large%20learning%20rate.png](gd4.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally, it's not necessary that the Loss function have only one global minima, or we can say it's not necessary that it's in a shape of a regular bowl. There may be holes, rigdes, plateus, and all sorts of irregular terrains, making the convergence different. So it totally depends on the initialization that if the loss converges to the global minima, or gets stuck in a local minima. Below given are two random initializations, one that is on the left gets stuck on a local minima, while one the right slowly approaches to the global one."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "![gd2.png](gd5.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "But fortunately in **most of the cases**, the loss function of a Linear Regression happens to be in a shape of regular bowl, which means no local minima's exist on the curve, just one global minimum exists. Plus another thing in our favour is, it is a continuous function in which the slope of the curve never changes much abruptly.  \n",
+    "  \n",
+    "  \n",
+    "Having these two odds in our favour tells us that the Gradient Descent Optimization is most likely to approach arbitarily close to the global minimum.\n",
+    "  \n",
+    "*** \n",
+    "\n",
+    "Now as we got the essence of Gradient Descent, let's take a look on it's different types.  \n",
+    "\n",
+    "## Types of Gradient Descent\n",
+    "\n",
+    "1. Batch Gradient Descent\n",
+    "2. Stochastic Gradient Descent\n",
+    "3. Mini-Batch Gradient Descent"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Batch Gradient Descent\n",
+    "\n",
+    "In Batch Gradient Descent, all points of the data are considered at every step. As a result it is terribly slow on very large training datasets, as well as making it the most accurate of all.  \n",
+    "\n",
+    "**So, if computational power and time isn't an issue, we should always prefer using Batch Gradient Descent, to get the optimum results.**  \n",
+    "\n",
+    "All of the concepts which we were talking about up until in Gradient Descent, are of Batch Gradient Descent.  \n",
+    "\n",
+    "Now, let's try to code Batch Gradient Descent on a Linear Regression Dataset."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    " **Importing & Plotting the Data**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "X = np.load(\"./Data/Linear Regression/X_data.npy\")\n",
+    "y = np.load(\"./Data/Linear Regression/Y_data.npy\")\n",
+    "\n",
+    "plt.scatter(X,y)\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(50, 2) (50, 1)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Adding constant column\n",
+    "X = np.concatenate([np.ones((X.shape[0], 1)), X], axis=1)\n",
+    "y = y.reshape(-1,1)\n",
+    "\n",
+    "print(X.shape, y.shape)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Applying Gradient Descent Approach\n",
+    "  \n",
+    "As we saw in Multi-Variable Regression, the value of $\\frac{dL}{dW}$ was :  \n",
+    "\n",
+    "$\\dfrac{dL}{dW} = 0 - 2X^Ty + 2X^TXW$  \n",
+    "\n",
+    "and then we equated this equation to $0$ to find the value of W, on which our minima exist, but this time instead of equating it to $0$, we'll apply the approach of Gradient Descent to update our Loss."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "learning_rate = 0.01\n",
+    "n_epochs = 1000\n",
+    "\n",
+    "W = np.random.randn(X.shape[1],1) #Randomly Initializing W\n",
+    "\n",
+    "# Updating W with gradient descent formula for n_epochs times\n",
+    "for i in range(n_epochs):\n",
+    "    dL_dW = (0 - 2*((X.T).dot(y)) + 2*(X.T.dot(X)).dot(W)) # <= dL/dW\n",
+    "    W = W - learning_rate*dL_dW"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[[2.55791360e-02]\n",
+      " [3.23245309e+01]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(W)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here we calculated the value of W using Batch Gradient Descent keeping the value of $\\alpha = 0.01$ i.e. learning_rate and we updated the value of W, 1000 times using the general Gradient Descent formula.  \n",
+    "\n",
+    "  \n",
+    "  \n",
+    "Now as we calculated the value of W using Gradient Descent, let's compare it with the normal approach we used earlier in Multi-Variable Regression, to find W.  \n",
+    "\n",
+    "$W = (X^TX)^{-1}X^Ty$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[[2.55791360e-02]\n",
+      " [3.23245309e+01]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "W_direct = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)\n",
+    "\n",
+    "print(W_direct)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As we can see, the result of both the approaches are very similar.  \n",
+    "\n",
+    "Thus we proved that the algorithm of Gradient Descent is itself powerful to reach the minima and we don't need to calulate the value of gradients on our own. But keep in mind here **learning_rate** and **n_epochs** are two important hyper-parameters, we should focus on.  \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "***\n",
+    "\n",
+    "### Stochastic Gradient Descent\n",
+    "\n",
+    "The main problem in Batch Gradient Descent is the fact that it still uses the whole training dataset to compute the gradients at every step, which makes it very slow when the training set is large. At the opposite extreme, Stochastic Gradient Descent picks up a random instance in the training dataset at every step and computes the gradients based on that single instance. Obviously, working on a single instance at a time makes the algorithm much faster because it has a very little data to manipulate at every iteration. It also makes it possible to train on huge training datasets, since only one instance needs to be in memory at each iteration.  \n",
+    "  \n",
+    "\n",
+    "On the other hand, due to stochastic nature, this algorithm is much less regular than Batch Gradient Descent: instead of gently decresing until it reaches the minimum, the loss function keeps bouncing up and down, decreasing only on average. Over time it will end up very close to minimum, but once it gets there it will continue to bounce around, never settling down. So once the algorithm stops, the final parameter values are good, but not optimal.  \n",
+    "  \n",
+    "  \n",
+    "When the Loss function is very irregular, this can actually help the algorithm jump out of local minima, so Stochastic Gradient Descent has a better chance of finding the global minimum that Batch Gradient Descent does.  \n",
+    "  \n",
+    "\n",
+    "Therefore, randomness is good to escape from local minima but bad because it means that the algorithm can never settle at the minimum. One solution to this dilemma is to gradually reduce the learning rate. The steps start out large (which helps make quick process and escape local minima), then get smaller and smaller, allowing the algorithm to settle at the global minimum.  \n",
+    "  \n",
+    "  \n",
+    "**If computation speed is our top-most priority, and we can settle down with some very minor errors in our predictions, then Stochastic Gradient Descent is recommended.**  \n",
+    "  \n",
+    "\n",
+    "Notice that since instances are picked randomly, some instances may be picked up several times per epoch, while others may not be picked at all. If you want to be sure that the algorithm goes through every instance at each epoch, another approach is to shuffle the training dataset (making sure to shuffle the input features and the labels jointly), then go through it instance by instance, then shuffle it again, and so on. However, this approach generally converges more slowly."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "  \n",
+    ">> When using Stochastic Gradient Descent, the training instances must be independent and identically distributed (IID) to ensure that the parameters get pulled through the global minimum, on average. A very simple way to ensure this is to shuffle the training dataset at the beginning of each epoch). If you do not shuffle the instances - For example, if the instances are sorted by label - then SGD will start by optimizing for one label, then the next, and so on, and it will not settle close to the global minimum.\n",
+    "  "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "To perform Linear Regression, using Stochastic Gradient Descent we can use SGDRegressor class of Scikit-Learn library, however coding the SGDRegressor on our own is not an intense task at all. This is to provide you the idea about the Scikit-Learn Library."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "X = np.load(\"./Data/Linear Regression/X_data.npy\")\n",
+    "y = np.load(\"./Data/Linear Regression/Y_data.npy\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "SGDRegressor()"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from sklearn.linear_model import SGDRegressor\n",
+    "sgd_reg = SGDRegressor(max_iter=1000,eta0=0.01)\n",
+    "sgd_reg.fit(X,y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(array([-0.00065003]), array([32.29970572]))"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "sgd_reg.intercept_, sgd_reg.coef_"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And as we can clearly see, the output by SGDRegressor is also very close to the normally calculated result.  \n",
+    "  \n",
+    "  \n",
+    "*Please Notice that  \n",
+    "    2.55791360e-02 = 0.00255791360   \n",
+    "    3.23245309e+01 = 32.3245309   \n",
+    "So don't get tangled in the different representation ways.*\n",
+    "   \n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "***\n",
+    "\n",
+    "### Mini-Batch Gradient Descent\n",
+    "\n",
+    "It is a rather simple algorithm to understand after studying about Batch-Gradient Descent and Stochastic-Gradient Descent.  \n",
+    "\n",
+    "In this algorithm at each step, instead of calculating the gradients based on the full training dataset (as in Batch Gradient Descent), or based on just one instance (as in Stochastic GD), Mini-Batch Gradient Descent computes the gradients on small random sets of instances called **mini-batches**.  \n",
+    "\n",
+    "The main advantage of Mini-Bactch GD over Stochastic GD is that you can get a performance boost from hardware optimization of matrix operations, especially when using GPUs.  \n",
+    "\n",
+    "Mini-Batch GD reaches a bit closer to global minima as compared to Stochastic Gradient Descent, as well making it harder to escape local minima's.  \n",
+    "  \n",
+    "  \n",
+    "> **Note:**\n",
+    "> \n",
+    "> Mini-Batch Gradient Descent can act like both:\n",
+    "> \n",
+    "> Batch-Gradient descent (when batch_size = training set size), and\n",
+    "> \n",
+    "> Stochastic Gradient Descent (when batch_size = 1).  \n",
+    "  \n",
+    "At the end, there is almost no difference between all the methods after training of the model. All these algorithms end up with very similar models and make predictions in exactly the same way. And the Answer to *\"Which Algorithm is best among all?\"* totally depends on type of dataset we're working on.  \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Given below are the different Gradient Descent Paths of these Algorithms, you may be able to compare their convergence rate now.  \n",
+    "\n",
+    "The Batch-Gradient Descent has the minimum irregularity among all and at converse we have Stochastic Gradient Descent having the maximum irregualrity. Mini-Batch GD lies somewhere between these two.\n",
+    "\n",
+    "\n",
+    "![](gd6.png)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Further Readings\n",
+    "\n",
+    "The sklearn implementation of these algorithms are a bit different. It involves a term **\"Tolerance\"** whose default value is \"0.001\", which means if the \"W\" is updated with the value lesser than tolerance, the algorithm will stop there. So, instead of totally relying on the no. of epochs, this approach seems to be a bit better. You can refer to https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html for more information regarding sklearn implementation of Gradient Descent.\n",
+    "    "
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
